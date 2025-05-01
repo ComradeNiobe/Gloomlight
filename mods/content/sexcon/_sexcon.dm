@@ -8,7 +8,7 @@
 /datum/client_preference/sexable
 	description = "Sex Mechanics"
 	key = "SEXCON_TOGGLE"
-	options = list(PREF_NO, PREF_YES)
+	default_value = PREF_NO
 
 /// DEFINES ///
 
