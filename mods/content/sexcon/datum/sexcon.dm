@@ -54,33 +54,9 @@
 	force = clamp(force + amt, SEX_FORCE_MIN, SEX_FORCE_MAX)
 
 /datum/sex_controller/proc/update_pink_screen()
-	var/severity = 0
-	switch(arousal)
-		if(1 to 10)
-			severity = 1
-		if(10 to 20)
-			severity = 2
-		if(20 to 30)
-			severity = 3
-		if(30 to 40)
-			severity = 4
-		if(40 to 50)
-			severity = 5
-		if(50 to 60)
-			severity = 6
-		if(60 to 70)
-			severity = 7
-		if(70 to 80)
-			severity = 8
-		if(80 to 90)
-			severity = 9
-		if(90 to INFINITY)
-			severity = 10
+	var/severity = clamp(ceil(arousal / 10), 0, 10)
 
-	if(severity > 0)
-		user.overlay_fullscreen("horny", /obj/screen/fullscreen/love, severity)
-	else
-		user.clear_fullscreen("horny")
+	SIGN(severity) ? user.overlay_fullscreen("horny", /obj/screen/fullscreen/love, severity) : user.clear_fullscreen("horny")
 
 /datum/sex_controller/proc/start(mob/living/human/new_target)
 	if(!ishuman(new_target))
@@ -432,9 +408,11 @@
 	desire_stop = FALSE
 	current_action = saction
 	log_attack("[key_name(user)] started sex action on [key_name(target)]: [current_action.name]")
-	INVOKE_ASYNC(src, PROC_REF(sex_action_loop))
+	sex_action_loop()
 
 /datum/sex_controller/proc/sex_action_loop()
+	set waitfor = FALSE
+
 	// Do action loop
 	var/decl/sex_action/performed_action_type = current_action
 	var/decl/sex_action/saction = SEX_ACTION(current_action)
