@@ -1,0 +1,10 @@
+#ifndef MODPACK_SEXCON
+#define MODPACK_SEXCON
+// BEGIN_INCLUDE
+#include "_sexcon.dm"
+#include "datum\sex_action.dm"
+#include "datum\sexcon_helpers.dm"
+#include "datum\sexcon.dm"
+#include "datum\sex_actions\oral\kissing.dm"
+// END_INCLUDE
+#endif
