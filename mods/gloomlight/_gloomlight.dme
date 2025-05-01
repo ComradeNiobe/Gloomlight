@@ -1,0 +1,22 @@
+#ifndef MODPACK_GLOOMLIGHT
+#define MODPACK_GLOOMLIGHT
+// BEGIN_INCLUDE
+#include "_gloomlight.dm"
+#include "turfs.dm"
+#include "datum\cultures.dm"
+#include "datum\currencies.dm"
+#include "datum\factions.dm"
+#include "datum\locations.dm"
+#include "datum\materials.dm"
+#include "datum\names.dm"
+#include "datum\outfits.dm"
+#include "datum\overrides.dm"
+#include "datum\skills.dm"
+#include "datum\species.dm"
+#include "props\signpost.dm"
+#include "datum\vampire\vampire.dm"
+#include "datum\vampire\vampire_bodytypes.dm"
+#include "datum\vampire\bloodsucking.dm"
+#include "datum\vampire\torpor.dm"
+// END_INCLUDE
+#endif
