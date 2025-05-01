@@ -5,11 +5,6 @@
 	uid = "toggle_sexcon"
 	desc = "Remove the # to enable sex mechanics."
 
-/decl/config/toggle/sexcon/Initialize()
-	// Init decls repository for sex actions.
-	decls_repository.get_decls_of_subtype(/decl/sex_action)
-	return ..()
-
 /datum/client_preference/sexable
 	description = "Sex Mechanics"
 	key = "SEXCON_TOGGLE"
