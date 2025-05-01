@@ -334,7 +334,7 @@
 		var/link = ""
 		if(!can_perform_action(saction))
 			link = "linkOff"
-		if(current_action == saction)
+		if(istype(current_action, saction))
 			link = "linkOn"
 		dat += "<center><a class='[link]' href='byond://?src=\ref[src];task=action;action_type=[saction::uid]'>[saction.name]</a></center>"
 		dat += "</td>"
@@ -360,7 +360,7 @@
 				return
 			try_start_action(saction)
 		if("stop")
-			try_stop_current_action()
+			stop_current_action()
 		if("speed_up")
 			adjust_speed(1)
 		if("speed_down")
@@ -378,6 +378,7 @@
 			arousal_frozen = !arousal_frozen
 	show_ui()
 
+// ? Why does this exist? Consider it depreciated.
 /datum/sex_controller/proc/try_stop_current_action()
 	if(!current_action)
 		return
@@ -394,11 +395,11 @@
 	current_action = null
 
 /datum/sex_controller/proc/try_start_action(decl/sex_action/saction)
-	if(saction == current_action)
-		try_stop_current_action()
+	if(istype(saction, current_action)
+		stop_current_action()
 		return
-	if(current_action != null)
-		try_stop_current_action()
+	if(!isnull(current_action))
+		stop_current_action()
 		return
 	if(!saction)
 		return
@@ -414,7 +415,6 @@
 	set waitfor = FALSE
 
 	// Do action loop
-	var/decl/sex_action/performed_action_type = current_action
 	var/decl/sex_action/saction = SEX_ACTION(current_action)
 
 	saction.on_start(user, target)
@@ -423,7 +423,7 @@
 			break
 		if(!do_after(user, (saction.do_time / get_speed_multiplier()), target = target))
 			break
-		if(current_action == null || performed_action_type != current_action)
+		if(isnull(current_action)) // Stopping the current action always sets it to null, so we don't need any further checks on this.
 			break
 		if(!can_perform_action(current_action))
 			break
