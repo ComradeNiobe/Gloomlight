@@ -42,7 +42,7 @@
 	if(!user.can_do_sex())
 		to_chat(user, SPAN_WARNING("I can't do this.</span>"))
 		return
-	if(target.get_preference_value(/datum/client_preference/sexable) != PREF_YES)) // Don't bang someone that doesn't want it.
+	if(target.get_preference_value(/datum/client_preference/sexable) != PREF_YES) // Don't bang someone that doesn't want it.
 		to_chat(user, SPAN_WARNING("[target] dosn't wish to be touched. (Their ERP preference under options)"))
 		to_chat(src, SPAN_WARNING("[user] failed to touch you. (Your ERP preference under options)"))
 		return
