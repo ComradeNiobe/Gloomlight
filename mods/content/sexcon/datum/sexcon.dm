@@ -570,12 +570,14 @@
 			return pick(list("brutally", "violently", "relentlessly", "savagely", "mercilessly"))
 
 /datum/sex_controller/proc/spanify_force(string)
+	var/force_span
 	switch(force)
 		if(SEX_FORCE_LOW)
-			return "<span class='love_low'>[string]</span>"
+			force_span = "love_low"
 		if(SEX_FORCE_MID)
-			return "<span class='love_mid'>[string]</span>"
+			force_span = "love_mid"
 		if(SEX_FORCE_HIGH)
-			return "<span class='love_high'>[string]</span>"
+			force_span = "love_high"
 		if(SEX_FORCE_EXTREME)
-			return "<span class='love_extreme'>[string]</span>"
+			force_span = "love_extreme"
+	return SPAN_CLASS(force_span, string)
