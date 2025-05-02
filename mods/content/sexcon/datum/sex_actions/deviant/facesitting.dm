@@ -13,11 +13,11 @@
 		return FALSE
 	if(!get_location_accessible(target, BODY_ZONE_PRECISE_MOUTH))
 		return FALSE
-	// Need to stand up
-	if(user.resting)
+	// Need to be standing
+	if(user.current_posture.prone)
 		return FALSE
-	// Target can't stand up
-	if(!target.resting)
+	// Target can't be standing
+	if(!target.current_posture.prone)
 		return FALSE
 	return TRUE
 
