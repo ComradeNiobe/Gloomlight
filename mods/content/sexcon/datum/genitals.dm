@@ -77,7 +77,7 @@
 	min_broken_damage = 35
 	w_class = ITEM_SIZE_SMALL
 	body_part = SLOT_BREASTS
-	parent_organ = BP_GROIN
+	parent_organ = BP_CHEST
 	joint = "base"
 	amputation_point = "base"
 	artery_name = "internal thoracic artery"
