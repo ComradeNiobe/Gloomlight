@@ -7,23 +7,30 @@
 /decl/sex_action/anal_ride_sex/shows_on_menu(mob/living/human/user, mob/living/human/target)
 	if(user == target)
 		return FALSE
-	if(!target.getorganslot(ORGAN_SLOT_PENIS))
+	if(!target.get_organ(BP_PENIS))
 		return FALSE
 	return TRUE
 
 /decl/sex_action/anal_ride_sex/can_perform(mob/living/human/user, mob/living/human/target)
 	if(user == target)
 		return FALSE
-	if(!get_location_accessible(user, BODY_ZONE_PRECISE_GROIN, TRUE))
+
+	var/target_covered_parts = target.get_covered_body_parts()
+	var/user_covered_parts = user.get_covered_body_parts()
+
+	if(target_covered_parts & SLOT_LOWER_BODY || user_covered_parts & SLOT_LOWER_BODY)
 		return FALSE
-	if(!get_location_accessible(target, BODY_ZONE_PRECISE_GROIN, TRUE))
+	if(!target.get_organ(BP_PENIS))
 		return FALSE
-	if(!target.getorganslot(ORGAN_SLOT_PENIS))
-		return FALSE
+
 	return TRUE
 
 /decl/sex_action/anal_ride_sex/on_start(mob/living/human/user, mob/living/human/target)
-	user.visible_message(span_warning("[user] gets on top of [target] and begins riding [target.p_them()] with [user.p_their()] butt!"))
+	. = ..()
+	var/decl/pronouns/pronouns = .
+	var/decl/pronouns/target_pronouns = target.get_pronouns()
+
+	user.visible_message(SPAN_WARNING("[user] gets on top of [target] and begins riding [target_pronouns.him] with [pronouns.his] butt!"))
 	playsound(target, list('mods/content/sexcon/sounds/mat/insert (1).ogg','mods/content/sexcon/sounds/mat/insert (2).ogg'), 20, TRUE, ignore_walls = FALSE)
 
 /decl/sex_action/anal_ride_sex/on_perform(mob/living/human/user, mob/living/human/target)
@@ -38,12 +45,12 @@
 
 	user.sexcon.perform_sex_action(target, 2, 4, FALSE)
 	if(target.sexcon.check_active_ejaculation())
-		target.visible_message(span_love("[target] cums into [user]'s butt!"))
+		target.visible_message(SPAN_PINK("[target] cums into [user]'s butt!"))
 		target.sexcon.cum_into()
 		target.virginity = FALSE
 
 /decl/sex_action/anal_ride_sex/on_finish(mob/living/human/user, mob/living/human/target)
-	user.visible_message(span_warning("[user] gets off [target]."))
+	user.visible_message(SPAN_WARNING("[user] gets off [target]."))
 
 /decl/sex_action/anal_ride_sex/is_finished(mob/living/human/user, mob/living/human/target)
 	if(user.sexcon.finished_check())

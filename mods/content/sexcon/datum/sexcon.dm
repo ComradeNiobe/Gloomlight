@@ -23,6 +23,7 @@
 	var/last_ejaculation_time = 0
 	var/last_moan = 0
 	var/last_pain = 0
+	var/sex_loop_timer
 
 /datum/sex_controller/New(mob/living/human/owner)
 	user = owner
@@ -80,7 +81,7 @@
 
 /datum/sex_controller/proc/ejaculate()
 	log_attack("[key_name(user)] ejaculated")
-	//user.visible_message(span_love("[user] makes a mess!"))
+	//user.visible_message(SPAN_PINK("[user] makes a mess!"))
 	playsound(user, 'mods/content/sexcon/sounds/mat/endout.ogg', 50, TRUE, ignore_walls = FALSE)
 	//add_cum_floor(get_turf(user))
 	after_ejaculation()
@@ -131,7 +132,7 @@
 
 /*
 /datum/sex_controller/proc/update_erect_state()
-	var/obj/item/organ/penis/penis = user.getorganslot(ORGAN_SLOT_PENIS)
+	var/obj/item/organ/penis/penis = user.get_organ(BP_PENIS)
 	if(penis)
 		penis.update_erect_state()
 */
@@ -256,7 +257,7 @@
 	return TRUE
 
 /datum/sex_controller/proc/can_ejaculate()
-	//if(!user.getorganslot(ORGAN_SLOT_TESTICLES) && !user.getorganslot(ORGAN_SLOT_VAGINA))
+	//if(!user.get_organ(ORGAN_SLOT_TESTICLES) && !user.get_organ(BP_VAGINA))
 	//	return FALSE
 	//if(HAS_TRAIT(user, TRAIT_LIMPDICK))
 	//	return FALSE
@@ -274,7 +275,7 @@
 /datum/sex_controller/proc/can_use_penis()
 	//if(HAS_TRAIT(user, TRAIT_LIMPDICK))
 	//	return FALSE
-	//var/obj/item/organ/penis/penor = user.getorganslot(ORGAN_SLOT_PENIS)
+	//var/obj/item/organ/penis/penor = user.get_organ(BP_PENIS)
 	//if(!penor)
 	//	return FALSE
 	//if(!penor.functional)
@@ -388,6 +389,10 @@
 /datum/sex_controller/proc/stop_current_action()
 	if(!current_action)
 		return
+	if(sex_loop_timer)
+		deltimer(sex_loop_timer)
+		sex_loop_timer = null
+
 	var/decl/sex_action/saction = SEX_ACTION(current_action)
 	saction.on_finish(user, target)
 	desire_stop = FALSE
@@ -395,7 +400,7 @@
 	current_action = null
 
 /datum/sex_controller/proc/try_start_action(decl/sex_action/saction)
-	if(istype(saction, current_action)
+	if(istype(saction, current_action))
 		stop_current_action()
 		return
 	if(!isnull(current_action))
@@ -405,6 +410,7 @@
 		return
 	if(!can_perform_action(saction))
 		return
+
 	// Set vars
 	desire_stop = FALSE
 	current_action = saction
@@ -412,32 +418,34 @@
 	sex_action_loop()
 
 /datum/sex_controller/proc/sex_action_loop()
-	set waitfor = FALSE
-
 	// Do action loop
 	var/decl/sex_action/saction = SEX_ACTION(current_action)
 
 	saction.on_start(user, target)
-	while(TRUE)
-		if(!isnull(target.client) && (target.get_preference_value(/datum/client_preference/sexable) == PREF_YES)) //Vrell - Needs changed to let me test sex mechanics solo
-			break
-		if(!do_after(user, (saction.do_time / get_speed_multiplier()), target = target))
-			break
-		if(isnull(current_action)) // Stopping the current action always sets it to null, so we don't need any further checks on this.
-			break
-		if(!can_perform_action(current_action))
-			break
-		if(saction.is_finished(user, target))
-			break
-		if(desire_stop)
-			break
-		saction.on_perform(user, target)
-		// It could want to finish afterwards the performed action
-		if(saction.is_finished(user, target))
-			break
-		if(!saction.continous)
-			break
-	stop_current_action()
+	var/saction_wait = saction.do_time / get_speed_multiplier()
+	sex_loop_timer = addtimer(CALLBACK(src, PROC_REF(sex_loop_internal), saction, saction_wait), saction_wait, (TIMER_LOOP | TIMER_UNIQUE | TIMER_STOPPABLE))
+
+/datum/sex_controller/proc/sex_loop_internal(decl/sex_action/saction, saction_wait)
+	PRIVATE_PROC(TRUE)
+
+	if(isnull(current_action)) // Stopping the current action always sets it to null, so we don't need any further checks on this.
+		return
+	if(!isnull(target.client) && (target.get_preference_value(/datum/client_preference/sexable) == PREF_NO)) //Vrell - Needs changed to let me test sex mechanics solo
+		stop_current_action()
+	if(!do_after(user, (saction_wait), target = target))
+		stop_current_action()
+	if(!can_perform_action(current_action))
+		stop_current_action()
+	if(saction.is_finished(user, target))
+		stop_current_action()
+	if(desire_stop)
+		stop_current_action()
+	saction.on_perform(user, target)
+	// It could want to finish afterwards the performed action
+	if(saction.is_finished(user, target))
+		stop_current_action()
+	if(!saction.continous)
+		stop_current_action()
 
 /datum/sex_controller/proc/can_perform_action(decl/sex_action/saction)
 	if(!saction)

@@ -23,16 +23,19 @@
 	return TRUE
 
 /decl/sex_action/proc/on_start(mob/living/human/user, mob/living/human/target)
-	SHOULD_CALL_PARENT(TRUE)
+	RETURN_TYPE(/decl/pronouns)
 
 	var/decl/pronouns/pronouns = user.get_pronouns()
 	return pronouns
 
 /decl/sex_action/proc/on_perform(mob/living/human/user, mob/living/human/target)
-	return
+	RETURN_TYPE(/decl/pronouns)
+
+	var/decl/pronouns/pronouns = user.get_pronouns()
+	return pronouns
 
 /decl/sex_action/proc/on_finish(mob/living/human/user, mob/living/human/target)
-	SHOULD_CALL_PARENT(TRUE)
+	RETURN_TYPE(/decl/pronouns)
 
 	var/decl/pronouns/pronouns = user.get_pronouns()
 	return pronouns

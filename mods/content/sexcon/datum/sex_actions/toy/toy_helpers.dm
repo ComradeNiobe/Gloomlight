@@ -1,9 +1,7 @@
-/proc/get_dildo_in_either_hand(mob/living/human/user)
-	for(var/obj/item/thing in user.held_items)
-		if(thing == null)
-			continue
-		if(!istype(thing, /obj/item/dildo))
-			continue
-		return thing
-	return null
+/mob/living/human/proc/get_dildo_in_either_hand()
+	RETURN_TYPE(/obj/item/dildo)
 
+	var/obj/item/dildo/dildo = locate() in get_held_items()
+
+	if(istype(dildo))
+		return dildo

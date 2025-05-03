@@ -27,7 +27,26 @@
 	. = ..()
 	QDEL_NULL(sexcon)
 
-/mob/living/human/verb/start_sexcon()
+/mob/living/human/handle_mouse_drop(atom/over, mob/user)
+	. = ..()
+	if(!. && ishuman(over) && ishuman(user) && user == src && user != over)
+		src.start_sexcon(over)
+		return TRUE
+
+/mob/living/human/proc/start_sexcon(mob/living/human/target)
+	if(!ishuman(src) || !istype(target))
+		return
+	if(!src.can_do_sex())
+		to_chat(src, SPAN_WARNING("I can't do this."))
+		return
+	if(target.get_preference_value(/datum/client_preference/sexable) != PREF_YES) // Don't bang someone that doesn't want it.
+		to_chat(src, SPAN_WARNING("[target] dosn't wish to be touched. (Their ERP preference under options)"))
+		to_chat(target, SPAN_WARNING("[src] failed to touch you. (Your ERP preference under options)"))
+		return
+
+	src.sexcon.start(target)
+
+/mob/living/human/verb/start_sexcon_verb()
 	set name = "Start Sexcon"
 	set category = "IC"
 	set src in view(1)
@@ -35,18 +54,7 @@
 	var/mob/living/human/user = usr
 	var/mob/living/human/target = src
 
-	//if(user.mmb_intent)
-	//	return ..()
-	if(!istype(user) || !istype(target))
-		return
-	if(!user.can_do_sex())
-		to_chat(user, SPAN_WARNING("I can't do this."))
-		return
-	if(target.get_preference_value(/datum/client_preference/sexable) != PREF_YES) // Don't bang someone that doesn't want it.
-		to_chat(user, SPAN_WARNING("[target] dosn't wish to be touched. (Their ERP preference under options)"))
-		to_chat(src, SPAN_WARNING("[user] failed to touch you. (Your ERP preference under options)"))
-		return
-	user.sexcon.start(target)
+	user.start_sexcon(target)
 
 /mob/living/proc/can_do_sex()
 	return TRUE
@@ -63,14 +71,14 @@
 	return
 
 	/*
-	var/obj/item/organ/testicles/testes = getorganslot(ORGAN_SLOT_TESTICLES)
+	var/obj/item/organ/testicles/testes = get_organ(ORGAN_SLOT_TESTICLES)
 	if(!testes)
 		return
-	var/obj/item/organ/vagina/vag = wife.getorganslot(ORGAN_SLOT_VAGINA)
+	var/obj/item/organ/vagina/vag = wife.get_organ(BP_VAGINA)
 	if(!vag)
 		return
 	if(prob(25) && wife.is_fertile() && is_virile())
-		vag.be_impregnated(src)
+		vag.be_impregnated()
 	*/
 
 /proc/add_cum_floor(turfu)

@@ -6,25 +6,31 @@
 /decl/sex_action/anal_sex/shows_on_menu(mob/living/human/user, mob/living/human/target)
 	if(user == target)
 		return FALSE
-	if(!user.getorganslot(ORGAN_SLOT_PENIS))
+	if(!user.get_organ(BP_PENIS))
 		return FALSE
 	return TRUE
 
 /decl/sex_action/anal_sex/can_perform(mob/living/human/user, mob/living/human/target)
 	if(user == target)
 		return FALSE
-	if(!get_location_accessible(user, BODY_ZONE_PRECISE_GROIN, TRUE))
+
+	var/target_covered_parts = target.get_covered_body_parts()
+	var/user_covered_parts = user.get_covered_body_parts()
+
+	if(target_covered_parts & SLOT_LOWER_BODY || user_covered_parts & SLOT_LOWER_BODY)
 		return FALSE
-	if(!get_location_accessible(target, BODY_ZONE_PRECISE_GROIN, TRUE))
-		return FALSE
-	if(!user.getorganslot(ORGAN_SLOT_PENIS))
+	if(!user.get_organ(BP_PENIS))
 		return FALSE
 	if(!user.sexcon.can_use_penis())
 		return
+
 	return TRUE
 
 /decl/sex_action/anal_sex/on_start(mob/living/human/user, mob/living/human/target)
-	user.visible_message(span_warning("[user] slides [user.p_their()] cock into [target]'s butt!"))
+	. = ..()
+	var/decl/pronouns/pronouns = .
+
+	user.visible_message(SPAN_WARNING("[user] slides [pronouns.his] cock into [target]'s butt!"))
 	playsound(target, list('mods/content/sexcon/sounds/mat/insert (1).ogg','mods/content/sexcon/sounds/mat/insert (2).ogg'), 20, TRUE, ignore_walls = FALSE)
 
 /decl/sex_action/anal_sex/on_perform(mob/living/human/user, mob/living/human/target)
@@ -33,7 +39,7 @@
 
 	user.sexcon.perform_sex_action(user, 2, 0, TRUE)
 	if(user.sexcon.check_active_ejaculation())
-		user.visible_message(span_love("[user] cums into [target]'s butt!"))
+		user.visible_message(SPAN_PINK("[user] cums into [target]'s butt!"))
 		user.sexcon.cum_into()
 		user.virginity = FALSE
 
@@ -44,7 +50,10 @@
 	target.sexcon.handle_passive_ejaculation()
 
 /decl/sex_action/anal_sex/on_finish(mob/living/human/user, mob/living/human/target)
-	user.visible_message(span_warning("[user] pulls [user.p_their()] cock out of [target]'s butt."))
+	. = ..()
+	var/decl/pronouns/pronouns = .
+
+	user.visible_message(SPAN_WARNING("[user] pulls [pronouns.his] cock out of [target]'s butt."))
 
 /decl/sex_action/anal_sex/is_finished(mob/living/human/user, mob/living/human/target)
 	if(user.sexcon.finished_check())

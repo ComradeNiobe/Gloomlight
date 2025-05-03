@@ -57,6 +57,47 @@
 #define PAIN_MINIMUM_FOR_DAMAGE PAIN_MED_EFFECT
 #define PAIN_DAMAGE_DIVISOR 50
 
+// GENITAL DEFINES //
+#define BP_PENIS "penis"
+#define BP_VAGINA "vagina"
+#define BP_BREASTS "breasts"
+
+#define SLOT_PENIS BITFLAG(20)
+#define SLOT_BREASTS BITFLAG(21)
+#define SLOT_VAGINA BITFLAG(22)
+
+#define BREAST_MILK /decl/material/liquid/drink/milk/breast_milk
+
+#define MIN_PENIS_SIZE 1
+#define DEFAULT_PENIS_SIZE 2
+#define MAX_PENIS_SIZE 3
+
+#define PENIS_TYPE_PLAIN 1
+#define PENIS_TYPE_KNOTTED 2
+#define PENIS_TYPE_EQUINE 3
+#define PENIS_TYPE_TAPERED 4
+#define PENIS_TYPE_TAPERED_DOUBLE 5
+#define PENIS_TYPE_TAPERED_DOUBLE_KNOTTED 6
+#define PENIS_TYPE_BARBED 7
+#define PENIS_TYPE_BARBED_KNOTTED 8
+#define PENIS_TYPE_TENTACLE 9
+
+#define SHEATH_TYPE_NONE 0
+#define SHEATH_TYPE_NORMAL 1
+#define SHEATH_TYPE_SLIT 2
+
+#define ERECT_STATE_NONE 0
+#define ERECT_STATE_PARTIAL 1
+#define ERECT_STATE_HARD 2
+
+#define MIN_TESTICLES_SIZE 1
+#define DEFAULT_TESTICLES_SIZE 2
+#define MAX_TESTICLES_SIZE 3
+
+#define MIN_BREASTS_SIZE 0
+#define DEFAULT_BREASTS_SIZE 3
+#define MAX_BREASTS_SIZE 5
+
 // SEX SOUND LISTS //
 var/global/list/sex_moan_heavy = list(
 	'mods/content/sexcon/sounds/voices/female/sex/sex (1).ogg',

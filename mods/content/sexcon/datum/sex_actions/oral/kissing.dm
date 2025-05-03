@@ -11,10 +11,13 @@
 /decl/sex_action/kissing/can_perform(mob/living/user, mob/living/target)
 	if(user == target)
 		return FALSE
-	if(target.check_mouth_coverage())
+
+	var/target_covered_parts = target.get_covered_body_parts()
+	var/user_covered_parts = user.get_covered_body_parts()
+
+	if(target_covered_parts & SLOT_FACE || user_covered_parts & SLOT_FACE)
 		return FALSE
-	if(user.check_mouth_coverage())
-		return FALSE
+
 	return TRUE
 
 /decl/sex_action/kissing/on_start(mob/living/human/user, mob/living/human/target)
